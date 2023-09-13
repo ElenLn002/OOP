@@ -1,2 +1,2 @@
 # OOP
-Here I share my projects of OOP lesson
+Here I share my projects/hws of OOP
