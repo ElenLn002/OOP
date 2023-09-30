@@ -10,7 +10,7 @@ private:
     std::string input;
 
 public:
-    void takeInput(std::istream& stream);
+     std::istream& takeInput(std::istream& stream);
     std::vector<std::string> getTokens();
 };
 
