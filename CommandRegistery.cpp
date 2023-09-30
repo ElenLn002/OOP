@@ -1,4 +1,4 @@
-#include "command_registry.hpp"
+#include "CommandRegistry.hpp"
 #include <stdexcept>
 
 CommandRegistry::CommandRegistry() :
