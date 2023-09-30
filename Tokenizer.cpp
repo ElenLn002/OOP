@@ -1,4 +1,4 @@
-#include "tokenizer.hpp"
+#include "Tokenizer.hpp"
 
 std::istream& Tokenizer::takeInput(std::istream& stream) {
     // Read input from the stream
