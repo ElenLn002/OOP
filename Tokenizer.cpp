@@ -1,10 +1,11 @@
 #include "tokenizer.hpp"
 
-void Tokenizer::takeInput(std::istream& stream) {
+std::istream& Tokenizer::takeInput(std::istream& stream) {
     // Read input from the stream
     std::stringstream buffer;
     buffer << stream.rdbuf();
     input = buffer.str();
+    return stream;
 }
 
 std::vector<std::string> Tokenizer::getTokens() {
