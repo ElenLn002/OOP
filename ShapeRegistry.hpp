@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+using ShapeType = std::string;
+
 class ShapeRegistry {
 public:
     ShapeRegistry();
