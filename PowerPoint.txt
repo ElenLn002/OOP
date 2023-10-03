@@ -1,0 +1,2 @@
+1 rectangle 4 
+2 circle red 
