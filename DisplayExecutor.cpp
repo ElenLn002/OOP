@@ -1,4 +1,4 @@
-#include "DisplatExecutor.hpp"
+#include "DisplayExecutor.hpp"
 
 DisplayExecutor::DisplayExecutor(const std::map<int, std::string>& itemsMap) : itemsMap(itemsMap) {}
 
