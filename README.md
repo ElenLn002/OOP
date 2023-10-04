@@ -1,2 +1,2 @@
 # OOP
-Here I share my projects/hws of OOP
+Power Point coursework repo
