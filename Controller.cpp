@@ -1,6 +1,6 @@
 #include "Controller.hpp"
 
-void Controller::run() {
+void Controller:: run() {
     CommandRegistry registry;
     std::string userInput;
     std::map<int, std::string> addedItemsMap;
@@ -66,6 +66,23 @@ void Controller::run() {
 
                 SaveExecutor saveExecutor(filePath, addedItemsMap);
                 saveExecutor.execute();
+            }
+            else if (parser.getCommand() == "Change") {
+                if (parser.getArguments().size() >= 2) {
+                    int indexToChange;
+                    try {
+                        indexToChange = std::stoi(parser.getArguments()[0]);
+                        std::string newArguments = parser.getRestOfTheLine();
+                        ChangeExecutor changeExecutor(indexToChange, newArguments);
+                        changeExecutor.execute(addedItemsMap);
+                    }
+                    catch (const std::invalid_argument& e) {
+                        std::cerr << "Invalid index for Change command." << std::endl;
+                    }
+                }
+                else {
+                    std::cerr << "Invalid arguments for Change command." << std::endl;
+                }
             }
         }
         else {
