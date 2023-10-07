@@ -69,6 +69,11 @@ void Controller::handleChange(Parser parser) {
         std::cerr << "Invalid arguments for Change command." << std::endl;
     }
 }
+void Controller::handleLoad(Parser parser) {
+    LoadExecutor loadExecutor(addedItemsMap);
+    loadExecutor.execute();
+
+}
 
 void Controller::run() {
     while (true) {
