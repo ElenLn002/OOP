@@ -27,6 +27,7 @@ public:
     void handleSave(Parser);
     void handleQuit(Parser);
     void handleChange(Parser);
+    void handleLoad(Parser);
 
 private:
     CommandRegistry registry;
