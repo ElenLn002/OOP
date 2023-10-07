@@ -5,7 +5,6 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <Windows.h>
 #include <stdexcept>
 #include <unordered_set>
 #include <map>
@@ -16,9 +15,26 @@
 #include "Parser.hpp"
 
 
+
 class Controller {
 public:
     void run();
+
+public:
+    void handleAdd(Parser);
+    void handleDisplay(Parser);
+    void handleRemove(Parser);
+    void handleSave(Parser);
+    void handleQuit(Parser);
+    void handleChange(Parser);
+
+private:
+    CommandRegistry registry;
+    std::string userInput;
+    std::map<int, std::string> addedItemsMap;
+
+    ShapeRegistry shapeRegistry;
+    CommandValidator commandValidator;
 };
 
 #endif //CONTROLLER_HPP
