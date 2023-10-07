@@ -1,5 +1,9 @@
 #include "Controller.hpp"
 
+//I know that it would be better to have an abstract class
+//than all the executor classes would be derived classes and would implement handleCommand() pure virtual function for themselves.
+//I have some issues of creating objects of derived classes, so at this point I leave it like it is, as the code works in this way.
+
 void Controller::handleAdd(Parser parser) {
     std::vector<std::string> arguments = parser.getArguments();
     if (arguments.size() >= 2) {
@@ -103,6 +107,9 @@ void Controller::run() {
             }
             else if (parser.getCommand() == "Change") {
                 handleChange(parser);
+            }
+            else if (parser.getCommand() == "Load") {
+                handleLoad(parser);
             }
             else {
                 std::cerr << "Invalid command." << std::endl;
