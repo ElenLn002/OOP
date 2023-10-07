@@ -9,7 +9,7 @@ AddExecutor::AddExecutor(const std::string& restOfTheLine) {
     }
 }
 
-void AddExecutor::addToMap(std::map<int, std::string>& itemsMap) {
+void AddExecutor::execute(std::map<int, std::string>& itemsMap) {
     static int index = 1;
     itemsMap[index++] = addedItems;
 }
