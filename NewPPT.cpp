@@ -1,532 +1,559 @@
-#include <algorithm>
 #include <iostream>
 #include <vector>
 #include <string>
 #include <map>
-#include <set>
-#include <unordered_set>
+#include <memory>
+#include <unordered_map>
 #include <fstream>
-#include <stdexcept>
-#include <regex>
 #include <sstream>
 
 std::string trim(const std::string& str) {
-	size_t first = str.find_first_not_of(" ");
-	if (std::string::npos == first) {
-		return str;
-	}
-	size_t last = str.find_last_not_of(" ");
-	return str.substr(first, (last - first + 1));
+    size_t first = str.find_first_not_of(" ");
+    if (std::string::npos == first) {
+        return str;
+    }
+    size_t last = str.find_last_not_of(" ");
+    return str.substr(first, (last - first + 1));
 }
 
-class Tokenizer{
+class Tokenizer {
 public:
-	void takeTokens(const std::string input);
-	std::vector<std::string> getTokens() const;
+    void takeTokens(const std::string input);
+    std::vector<std::string> getTokens() const;
 
 private:
-	std::string token;
-	std::vector<std::string> tokens;
+    std::string token;
+    std::vector<std::string> tokens;
 };
 
 void Tokenizer::takeTokens(const std::string input) {
-	std::string token;
-	std::istringstream iss(input);
-	while (iss >> token) {
-		tokens.push_back(token);
-	}
+    std::string token;
+    std::istringstream iss(input);
+    while (iss >> token) {
+        tokens.push_back(token);
+    }
 }
 
 std::vector<std::string> Tokenizer::getTokens() const {
-	return tokens;
+    return tokens;
 }
 
 class CommandRegistry {
 public:
-	CommandRegistry();
-	bool isValidCommand(std::string& cmd);
+    CommandRegistry();
+    bool isValidCommand(const std::string& cmd);
 
 private:
-	std::vector<std::string> validCommands;
+    std::vector<std::string> validCommands;
 };
 
-CommandRegistry::CommandRegistry():
-	validCommands{"Add", "Remove", "Save", "Display", "List", "Change", "Load", "Quit"} {}
+CommandRegistry::CommandRegistry() :
+    validCommands{ "Add", "Remove", "Save", "Display", "List", "Change", "Quit" } {}
 
-bool CommandRegistry:: isValidCommand(std::string& commandName){
-	for (auto input : validCommands) {
-		if (commandName == input) {
-			return true;
-		}
-	}
-	return false;
+bool CommandRegistry::isValidCommand(const std::string& commandName) {
+    for (const auto& input : validCommands) {
+        if (commandName == input) {
+            return true;
+        }
+    }
+    return false;
+}
+
+class AttributeRegistry {
+public:
+    AttributeRegistry();
+    bool areValidAttributes(const std::vector<std::string>& attr);
+
+private:
+    std::vector<std::string> validAttributes;
+};
+
+AttributeRegistry::AttributeRegistry() :
+    validAttributes{ "-colour", "-TL", "-RB", "-slide" } {}
+
+bool AttributeRegistry::areValidAttributes(const std::vector<std::string>& attrs) {
+    for (const std::string& attr : attrs) {
+        bool isValid = false;
+        for (const std::string& validAttr : validAttributes) {
+            if (attr == validAttr) {
+                isValid = true;
+                break;
+            }
+        }
+        if (!isValid) {
+            return false;  
+        }
+    }
+    return true;  // All attributes are valid.
 }
 
 class Parser {
 public:
-	Parser(const std::string& input, CommandRegistry& registry);
+    Parser(const std::string& input, CommandRegistry& registry);
 
-	std::string getCommand() const;
-	std::vector<std::string> getItems() const;
-	std::string getRestOfLine() const;
-	bool getValidCommand() const;
 
-	void parse();
+    void parse();
 
 private:
-	std::string input;
-	CommandRegistry& registry;
-	std::string command;  // Store the valid command
-	std::vector<std::string> items;  // Store the arguments
-	std::string restOfLine;  // Store the rest of the line
-	bool validCommand;  // Flag to indicate if the command is valid
+    std::string input;
+    CommandRegistry& registry;
+    std::string command;  
+    std::vector<std::string> items;  
+    std::string restOfLine;  
+    bool validCommand;  
 };
 
-
-Parser::Parser(const std::string& input, CommandRegistry& registry) : 
-	input(input), registry(registry), validCommand(false){}
-
-std::string Parser::getCommand() const {
-	return command;
-}
-
-std::vector<std::string> Parser:: getItems() const {
-	return items;
-}
-
-std::string Parser::getRestOfLine() const {
-	return restOfLine;
-}
-
-bool Parser::getValidCommand() const{
-	return validCommand;
+Parser::Parser(const std::string& input, CommandRegistry& registry) :
+    input(input), registry(registry), validCommand(false) {
+    parse();
 }
 
 void Parser::parse() {
-	Tokenizer tokenizer;
-	tokenizer.takeTokens(input);
-	std::vector<std::string> tokens = tokenizer.getTokens();
+    Tokenizer tokenizer;
+    tokenizer.takeTokens(input);
+    std::vector<std::string> tokens = tokenizer.getTokens();
 
-	if (!tokens.empty()) {
-		std::string possibleCommand = tokens[0];
-		if (registry.isValidCommand(possibleCommand)) {
-			validCommand = true;
-			command = possibleCommand;
-		}
+    if (!tokens.empty()) {
+        std::string possibleCommand = tokens[0];
+        if (registry.isValidCommand(possibleCommand)) {
+            validCommand = true;
+            command = possibleCommand;
+        }
 
-		items.clear();
-		restOfLine.clear();
-		for (size_t i = 1; i < tokens.size(); ++i) {
-			if (i == 1) {
-			 restOfLine += tokens[i];
-			}
-			else {
-				restOfLine += " " + tokens[i];
-			}
-			items.push_back(tokens[i]);
-		}
-	}
-
+        items.clear();
+        restOfLine.clear();
+        for (size_t i = 1; i < tokens.size(); ++i) {
+            if (i == 1) {
+                restOfLine += tokens[i];
+            }
+            else {
+                restOfLine += " " + tokens[i];
+            }
+            items.push_back(tokens[i]);
+        }
+    }
 }
 
 class ShapeRegistry {
 public:
-	ShapeRegistry();
-	bool isValidShape(const std::string& shape);  // Accept a const reference
+    ShapeRegistry();
+    bool isValidShape(const std::string& shape);
 
 private:
-	std::vector<std::string> validShapes;
+    std::vector<std::string> validShapes;
 };
 
 ShapeRegistry::ShapeRegistry() :
-	validShapes{ "rectangle", "ellipse", "line", "triangle", "trapezoid" } {}
+    validShapes{ "rectangle", "ellipse", "line", "triangle", "trapezoid" } {}
 
-bool ShapeRegistry::isValidShape(const std::string& inputShape) {  // Accept a const reference
-	for (const auto& input : validShapes) {
-		if (inputShape == input) {
-			return true;
-		}
-	}
-	return false;
+bool ShapeRegistry::isValidShape(const std::string& inputShape) {
+    for (const auto& input : validShapes) {
+        if (inputShape == input) {
+            return true;
+        }
+    }
+    return false;
 }
 
 class CommandValidator {
 public:
-	CommandValidator(CommandRegistry& registry, ShapeRegistry& shapeRegistry);
-
-	bool validateCommand(const Parser& parser, std::map<int, std::string>& itemsMap);
-
-private:
-	CommandRegistry& registry;
-	ShapeRegistry& shapeRegistry;
-
-	bool validateColor(const std::string& color);
-	bool validateCoordinate(const std::string& coord);
-	bool validateSlide(const std::string& slide, int lastID);
-};
-
-CommandValidator::CommandValidator(CommandRegistry& registry, ShapeRegistry& shapeRegistry)
-	: registry(registry), shapeRegistry(shapeRegistry) {}
-
-bool CommandValidator::validateCommand(const Parser& parser, std::map<int, std::string>& itemsMap) {
-	if (!parser.getValidCommand()) {
-		std::cerr << "Invalid command." << std::endl;
-		return false;
-	}
-
-	if (parser.getCommand() == "Add") {
-		if (parser.getItems().empty()) {
-			std::cerr << "Add command requires item attributes." << std::endl;
-			return false;
-		}
-
-		std::set<std::string> validAttributes{ "-colour", "-TL", "-RB", "-slide" };
-		std::string prevAttribute;
-		int lastID = itemsMap.empty() ? 0 : itemsMap.rbegin()->first;
-
-		for (const std::string& attribute : parser.getItems()) {
-			if (validAttributes.find(attribute) == validAttributes.end()) {
-				std::cerr << "Invalid attribute: " << attribute << std::endl;
-				return false;
-			}
-
-			if (attribute == "-colour") {
-				if (!validateColor(parser.getRestOfLine())) {
-					std::cerr << "Invalid colour: " << parser.getRestOfLine() << std::endl;
-					return false;
-				}
-			}
-			else if (attribute == "-TL" || attribute == "-RB") {
-				if (!validateCoordinate(parser.getRestOfLine())) {
-					std::cerr << "Invalid coordinate format: " << parser.getRestOfLine() << std::endl;
-					return false;
-				}
-			}
-			else if (attribute == "-slide") {
-				if (!validateSlide(parser.getRestOfLine(), lastID)) {
-					std::cerr << "Invalid slide number: " << parser.getRestOfLine() << std::endl;
-					return false;
-				}
-			}
-
-			prevAttribute = attribute;
-		}
-	}
-
-	// Implement validation logic for other commands as needed
-
-	return true;
-}
-
-bool CommandValidator::validateColor(const std::string& color) {
-	std::set<std::string> validColors{ "red", "green", "yellow", "blue", "dark blue" };
-	return validColors.count(color) > 0;
-}
-
-bool CommandValidator::validateCoordinate(const std::string& coord) {
-	if (coord.size() < 5 || coord[0] != '(' || coord[coord.size() - 1] != ')' || coord.find(';') == std::string::npos) {
-		return false;
-	}
-
-	std::string x_part = coord.substr(1, coord.find(';') - 1);
-	std::string y_part = coord.substr(coord.find(';') + 2, coord.size() - 2 - coord.find(';'));
-
-	try {
-		int x = std::stoi(x_part);
-		int y = std::stoi(y_part);
-
-		return true;
-	}
-	catch (const std::invalid_argument&) {
-		return false;
-	}
-}
-
-bool CommandValidator::validateSlide(const std::string& slide, int lastID) {
-	try {
-		int slideNumber = std::stoi(slide);
-		return slideNumber == (lastID + 1) || slideNumber <= lastID;
-	}
-	catch (const std::invalid_argument&) {
-		return false;
-	}
-}
-
-
-class CommandExecutor{
-public:
-	virtual void execute(std::map<int, std::string>& itemsMap) = 0;
-};
-
-class AddExecutor : public CommandExecutor{
-public:
-	AddExecutor(std::string restOfLine);
-	void execute(std::map<int, std::string>& itemsMap) override;
+    CommandValidator(CommandRegistry& cmdRegistry, ShapeRegistry& shapeRegistry, AttributeRegistry& attrRegistry);
+    bool isValidCommand(const std::string& input);
 
 private:
-	std::string addedAttributes;
+    CommandRegistry& cmdRegistry;
+    ShapeRegistry& shapeRegistry;
+    AttributeRegistry& attrRegistry;
+};
+
+CommandValidator::CommandValidator(CommandRegistry& cmdRegistry, ShapeRegistry& shapeRegistry, AttributeRegistry& attrRegistry) :
+    cmdRegistry(cmdRegistry), shapeRegistry(shapeRegistry), attrRegistry(attrRegistry) {}
+
+bool CommandValidator::isValidCommand(const std::string& input) {
+    Tokenizer tokenizer;
+    tokenizer.takeTokens(input);
+    std::vector<std::string> tokens = tokenizer.getTokens();
+
+    // Check if there are at least two tokens (command and shape)
+    if (tokens.size() < 2) {
+        return false;
+    }
+
+    // Check if the first token is a valid command
+    if (!cmdRegistry.isValidCommand(tokens[0])) {
+        return false;
+    }
+
+    // Check if the second token is a valid shape
+    if (!shapeRegistry.isValidShape(tokens[1])) {
+        return false;
+    }
+
+    // Check if other tokens starting with dash are valid attributes
+    std::vector<std::string> attributes(tokens.begin() + 2, tokens.end());
+    if (!attrRegistry.areValidAttributes(attributes)) {
+        return false;
+    }
+
+    return true;
+}
+
+class Item {
+public:
+    Item(int ID, const std::string& shape, const std::string& geometry, const std::string& attributes);
+
+    std::string getShape() const;
+    std::string getGeometry() const;
+    std::string getAttributes() const;
+    
+    void setAttributes(const std::string& attributes);
+    void setGeometry(const std::string& geometry);
+
+private:
+    std::string attributes;
+    std::string shape;
+    std::string geometry;
+    int ID;
+};
+
+Item::Item(int ID, const std::string& shape, const std::string& geometry, const std::string& attributes) :
+    ID(ID), shape(shape), geometry(geometry), attributes(attributes) {}
+
+std::string Item::getShape() const {
+    return shape;
+}
+
+std::string Item::getGeometry() const {
+    return geometry;
+}
+
+std::string Item::getAttributes() const {
+    return attributes;
+}
+
+void Item::setAttributes(const std::string& attributes) {
+    this->attributes = attributes;
+}
+
+void Item::setGeometry(const std::string& geometry) {
+    this->geometry = geometry;
+}
+
+class Slide {
+public:
+    Slide()=default;
+
+    void addItem(const std::shared_ptr<Item>& item);
+    const std::vector<std::shared_ptr<Item>>& getItems() const;
+
+private:
+    std::vector<std::shared_ptr<Item>> items;
+};
+
+
+void Slide::addItem(const std::shared_ptr<Item>& item) {
+    items.push_back(item);
+}
+
+const std::vector<std::shared_ptr<Item>>& Slide::getItems() const {
+    return items;
+}
+
+class Document {
+public:
+    Document()=default;
+
+    void addSlide(const std::shared_ptr<Slide>& slide);
+    const std::vector<std::shared_ptr<Slide>>& getSlides() const;
+
+private:
+    std::vector<std::shared_ptr<Slide>> slides;
+};
+
+void Document::addSlide(const std::shared_ptr<Slide>& slide) {
+    slides.push_back(slide);
+}
+
+const std::vector<std::shared_ptr<Slide>>& Document::getSlides() const {
+    return slides;
+}
+
+
+class CommandExecutor {
+public:
+    virtual void execute(std::map<int, std::string>& itemsMap) = 0;
+};
+
+class AddExecutor : public CommandExecutor {
+public:
+    AddExecutor(std::string restOfLine);
+    void execute(std::map<int, std::string>& itemsMap) override;
+
+private:
+    std::string addedAttributes;
 };
 
 AddExecutor::AddExecutor(std::string restOfLine) {
-	std::istringstream iss(restOfLine);
-	std::string token;
-	while (iss >> token) {
-		if (token[0] != '-') {
-			addedAttributes += token + " ";
-		}
-	}
+    std::istringstream iss(restOfLine);
+    std::string token;
+    while (iss >> token) {
+        if (token[0] != '-') {
+            addedAttributes += token + " ";
+        }
+    }
 }
 
 void AddExecutor::execute(std::map<int, std::string>& itemsMap) {
-	static int ID = 1;
-	itemsMap[ID++] = addedAttributes;
+    static int ID = 1;
+    itemsMap[ID++] = addedAttributes;
 }
 
-class RemoveExecutor : public CommandExecutor{
+class RemoveExecutor : public CommandExecutor {
 public:
-	RemoveExecutor(int ID);
-	void execute(std::map<int, std::string>& itemsMap) override;
-
-private:  
-	int itemID;
-};
-
-RemoveExecutor::RemoveExecutor(int ID): itemID(ID){}
-
-void RemoveExecutor::execute(std::map<int, std::string>& itemsMap) {
-	auto it = itemsMap.find(itemID);
-	if (it != itemsMap.end()) {
-		itemsMap.erase(it);
-	}
-	else {
-		std::cerr << "ID not found" << std::endl;
-	}
-}
-
-class ChangeExecutor : public CommandExecutor{
-public:
-	ChangeExecutor(int ID, std::string& newAttributes);
-	void execute(std::map<int, std::string>& itemsMap) override;
+    RemoveExecutor(int ID);
+    void execute(std::map<int, std::string>& itemsMap) override;
 
 private:
-	int itemID;
-	std::string newAttributes;
+    int itemID;
+};
+
+RemoveExecutor::RemoveExecutor(int ID) : itemID(ID) {}
+
+void RemoveExecutor::execute(std::map<int, std::string>& itemsMap) {
+    auto it = itemsMap.find(itemID);
+    if (it != itemsMap.end()) {
+        itemsMap.erase(it);
+    }
+    else {
+        std::cerr << "ID not found" << std::endl;
+    }
+}
+
+class ChangeExecutor : public CommandExecutor {
+public:
+    ChangeExecutor(int ID, std::string& newAttributes);
+    void execute(std::map<int, std::string>& itemsMap) override;
+
+private:
+    int itemID;
+    std::string newAttributes;
 };
 
 ChangeExecutor::ChangeExecutor(int ID, std::string& newAttributes) :
-	itemID(ID), newAttributes(newAttributes) {}
+    itemID(ID), newAttributes(newAttributes) {}
 
 void ChangeExecutor::execute(std::map<int, std::string>& itemsMap) {
-	auto it = itemsMap.find(itemID);
-	if (it != itemsMap.end()) {
-		it->second = newAttributes;
-	}
-	else {
-		std::cerr << "ID not found" << std::endl;
-	}
-
+    auto it = itemsMap.find(itemID);
+    if (it != itemsMap.end()) {
+        it->second = newAttributes;
+    }
+    else {
+        std::cerr << "ID not found" << std::endl;
+    }
 }
 
-class SaveExecutor : public CommandExecutor{
+class SaveExecutor : public CommandExecutor {
 public:
-	SaveExecutor(std::string filePath, std::map<int, std::string>& itemsMap);
-	void execute(std::map<int, std::string>& itemsMap) override;
+    SaveExecutor(std::string filePath, std::map<int, std::string>& itemsMap);
+    void execute(std::map<int, std::string>& itemsMap) override;
 
 private:
-	std::string filePath;
-	std::map<int, std::string>& itemsMap;
-
+    std::string filePath;
+    std::map<int, std::string>& itemsMap;
 };
 
-SaveExecutor::SaveExecutor(std::string filePath, std::map<int, std::string>& itemsMap):
-	filePath(filePath), itemsMap(itemsMap){}
+SaveExecutor::SaveExecutor(std::string filePath, std::map<int, std::string>& itemsMap) :
+    filePath(filePath), itemsMap(itemsMap) {}
 
 void SaveExecutor::execute(std::map<int, std::string>& itemsMap) {
-	std::ofstream outputFile(filePath);
-	if (!outputFile.is_open()) {
-		std::cerr << "Unable to open file";
-	}
+    std::ofstream outputFile(filePath);
+    if (!outputFile.is_open()) {
+        std::cerr << "Unable to open file" << std::endl;
+        return;
+    }
 
-	for (const auto& entry : itemsMap) {
-		outputFile << entry.first << " " << entry.second << std::endl;
-	}
+    for (const auto& entry : itemsMap) {
+        outputFile << entry.first << " " << entry.second << std::endl;
+    }
 
-	std::cout << "Content saved to file: " << filePath << std::endl;
-	outputFile.close();
+    std::cout << "Content saved to file: " << filePath << std::endl;
+    outputFile.close();
 }
 
-class DisplayExecutor : public CommandExecutor{
+class DisplayExecutor : public CommandExecutor {
 public:
-	DisplayExecutor(int ID, std::string attributes);
-	void execute(std::map<int, std::string>& itemsMap) override;
+    DisplayExecutor(int ID, const std::map<int, std::string>& itemsMap);
+    void execute(std::map<int, std::string>& itemsMap) override;
 
 private:
-	int itemID;
-	std::string ItemAttributes;
+    int itemID;
+    const std::map<int, std::string>& itemsMap;
 };
 
-DisplayExecutor::DisplayExecutor(int ID, std::string attributes) :
-itemID(ID), ItemAttributes(attributes) {}
+DisplayExecutor::DisplayExecutor(int ID, const std::map<int, std::string>& itemsMap)
+    : itemID(ID), itemsMap(itemsMap) {}
 
 void DisplayExecutor::execute(std::map<int, std::string>& itemsMap) {
-	auto it = itemsMap.find(itemID);
-	if (it != itemsMap.end()) {
-		auto entry = itemsMap.begin();
-		std::cout << entry->first << " " << entry->second << std::endl;
-	}
-	else {
-		std::cerr << "ID not found" << std::endl;
-	}
+    auto it = itemsMap.find(itemID);
+    if (it != itemsMap.end()) {
+        std::cout << "ID: " << itemID << " Shape: " << it->second << std::endl;
+    }
+    else {
+        std::cerr << "ID not found: " << itemID << std::endl;
+    }
 }
 
 class ListExecutor : public CommandExecutor {
 public:
-	ListExecutor(const std::map<int, std::string>& itemsMap);
-	void execute(std::map<int, std::string>& itemsMap) override;
+    ListExecutor(const std::map<int, std::string>& itemsMap);
+    void execute(std::map<int, std::string>& itemsMap) override;
 
 private:
-	const std::map<int, std::string>& itemsMap;
+    const std::map<int, std::string>& itemsMap;
 };
 
-ListExecutor::ListExecutor(const std::map<int, std::string>& itemsMap):
-	itemsMap(itemsMap) {}
+ListExecutor::ListExecutor(const std::map<int, std::string>& itemsMap) :
+    itemsMap(itemsMap) {}
 
 void ListExecutor::execute(std::map<int, std::string>& itemsMap) {
-	for (const auto& entry : itemsMap) {
-		std::cout << entry.first << " " << entry.second << std::endl;
-	}
+    for (const auto& entry : itemsMap) {
+        std::cout << entry.first << " " << entry.second << std::endl;
+    }
 }
 
 class Controller {
 public:
-	Controller(CommandRegistry& cmdRegistry, ShapeRegistry& shpRegistry, CommandValidator& cmdValidator, bool flag);
-	void run();
+    void run();
 
 private:
-	std::map<int, std::string> itemsMap;
-	CommandRegistry& commandRegistry;
-	ShapeRegistry& shapeRegistry;
-	CommandValidator& commandValidator;
-	bool flag;
+    std::map<int, std::string> itemsMap;
 
-	bool validateCommand(const Parser& parser);
-	void executeCommand(const Parser& parser);
+    void handleAdd(const std::string& restOfTheLine);
+    void handleDisplay();
+    void handleRemove(const std::string& restOfTheLine);
+    void handleSave(const std::string& restOfTheLine);
+    void handleChange(const std::string& restOfTheLine);
+    void handleList();
 };
 
-Controller::Controller(CommandRegistry& cmdRegistry, ShapeRegistry& shpRegistry, CommandValidator& cmdValidator, bool flag)
-	: commandRegistry(cmdRegistry), shapeRegistry(shpRegistry), commandValidator(cmdValidator), flag(true) {}
-
 void Controller::run() {
-	while (flag) {
+    CommandRegistry cmdreg;
+    bool flag = true;
+    while (flag) {
+        std::cout << "Enter a command: ";
+        std::string userInput;
+        std::getline(std::cin, userInput);
 
-		std::cout << "Enter a command: ";
-		std::string userInput;
-		std::getline(std::cin, userInput);
+        std::istringstream iss(userInput);
+        std::string command;
+        iss >> command;
+        command = trim(command);
 
-		Parser parser(userInput, commandRegistry);
-		parser.parse();
+        if (cmdreg.isValidCommand(command)) {
+            std::string restOfTheLine = trim(userInput.substr(command.length()));
 
-		executeCommand(parser);
-	}
+            if (command == "Add") {
+                handleAdd(restOfTheLine);
+            }
+            else if (command == "Display") {
+                handleDisplay();
+            }
+            else if (command == "Quit") {
+                flag = false;
+            }
+            else if (command == "Remove") {
+                handleRemove(restOfTheLine);
+            }
+            else if (command == "Save") {
+                handleSave(restOfTheLine);
+            }
+            else if (command == "Change") {
+                handleChange(restOfTheLine);
+            }
+            else if (command == "List") {
+                handleList();
+            }
+        }
+        else {
+            std::cerr << "Invalid command." << std::endl;
+        }
+    }
 }
 
-
-
-bool Controller::validateCommand(const Parser& parser) {
-	if (!parser.getValidCommand()) {
-		std::cerr << "Invalid command." << std::endl;
-		return false;
-	}
-
-	if (parser.getCommand() == "Add") {
-		if (!parser.getItems().empty() && parser.getItems()[0] == "shape") {
-			// Check if the shape is valid
-			if (!shapeRegistry.isValidShape(parser.getRestOfLine())) {
-				std::cerr << "Invalid shape: " << parser.getRestOfLine() << std::endl;
-				return false;
-			}
-		}
-		else {
-			std::cerr << "Add command requires 'shape' attribute." << std::endl;
-			return false;
-		}
-
-		if (!commandValidator.validateCommand(parser, itemsMap)) {
-			return false;
-		}
-	}
-	return true;
+void Controller::handleAdd(const std::string& restOfTheLine) {
+    AddExecutor addExecutor(restOfTheLine);
+    addExecutor.execute(itemsMap);
 }
 
-void Controller::executeCommand(const Parser& parser) {
-	if (!validateCommand(parser)) {
-		return;
-	}
-	
-	else if (parser.getCommand() == "Display") {
-		// Create and execute the Display command logic
-		std::cout << "Displaying item: " << parser.getRestOfLine() << std::endl;
-	}
-	else if (parser.getCommand() == "Quit") {
-		flag = false;
-	}
-	else if (parser.getCommand() == "Remove") {
-		// Create and execute the Remove command logic
-		if (!parser.getRestOfLine().empty()) {
-			int indexToRemove;
-			try {
-				indexToRemove = std::stoi(parser.getRestOfLine());
-				RemoveExecutor removeExecutor(indexToRemove);
-				removeExecutor.execute(itemsMap);
-			}
-			catch (const std::invalid_argument& e) {
-				std::cerr << "Invalid index for Remove command." << std::endl;
-			}
-		}
-		else {
-			std::cerr << "Invalid arguments for Remove command." << std::endl;
-		}
-	}
-	else if (parser.getCommand() == "Save") {
-		// Create and execute the Save command logic
-		if (!parser.getRestOfLine().empty()) {
-			std::string filePath = parser.getRestOfLine();
-			SaveExecutor saveExecutor(filePath, itemsMap);
-			saveExecutor.execute(itemsMap);
-		}
-		else {
-			std::cerr << "Invalid arguments for Save command." << std::endl;
-		}
-	}
-	else if (parser.getCommand() == "Change") {
-		// Create and execute the Change command logic
-		std::istringstream argStream(parser.getRestOfLine());
-		int indexToChange;
-		argStream >> indexToChange;
-		std::string newAttributes = parser.getRestOfLine().substr(parser.getRestOfLine().find_first_of(" ") + 1);
+void Controller::handleDisplay() {
+    int displayID;
+    std::cout << "Enter the ID to display: ";
+    std::cin >> displayID;
 
-		if (argStream && !newAttributes.empty()) {
-			ChangeExecutor changeExecutor(indexToChange, newAttributes);
-			changeExecutor.execute(itemsMap);
-		}
-		else {
-			std::cerr << "Invalid arguments for Change command." << std::endl;
-		}
-	}
-	else if (parser.getCommand() == "List") {
-		// Create and execute the List command logic
-		ListExecutor listExecutor(itemsMap);
-		listExecutor.execute(itemsMap);
-	}
-	
+    auto it = itemsMap.find(displayID);
+    if (it != itemsMap.end()) {
+        // Create a DisplayExecutor with the user-provided ID
+        DisplayExecutor displayExecutor(displayID, itemsMap);
+
+        // Execute the DisplayExecutor
+        displayExecutor.execute(itemsMap);
+    }
+    else {
+        std::cerr << "ID not found: " << displayID << std::endl;
+    }
+}
+
+void Controller::handleRemove(const std::string& restOfTheLine) {
+    if (!restOfTheLine.empty()) {
+        int indexToRemove;
+        try {
+            indexToRemove = std::stoi(restOfTheLine);
+            RemoveExecutor removeExecutor(indexToRemove);
+            removeExecutor.execute(itemsMap);
+        }
+        catch (const std::invalid_argument& e) {
+            std::cerr << "Invalid index for Remove command." << std::endl;
+        }
+    }
+    else {
+        std::cerr << "Invalid arguments for Remove command." << std::endl;
+    }
+}
+
+void Controller::handleSave(const std::string& restOfTheLine) {
+    if (!restOfTheLine.empty()) {
+        std::string filePath = trim(restOfTheLine);
+        SaveExecutor saveExecutor(filePath, itemsMap);
+        saveExecutor.execute(itemsMap);
+    }
+    else {
+        std::cerr << "Invalid arguments for Save command." << std::endl;
+    }
+}
+
+void Controller::handleChange(const std::string& restOfTheLine) {
+    std::istringstream argStream(restOfTheLine);
+    int indexToChange;
+    argStream >> indexToChange;
+    std::string newArguments = trim(restOfTheLine.substr(restOfTheLine.find_first_of(" ") + 1));
+
+    if (argStream && !newArguments.empty()) {
+        ChangeExecutor changeExecutor(indexToChange, newArguments);
+        changeExecutor.execute(itemsMap);
+    }
+    else {
+        std::cerr << "Invalid arguments for Change command." << std::endl;
+    }
+}
+
+void Controller::handleList() {
+    ListExecutor listExecutor(itemsMap);
+    listExecutor.execute(itemsMap);
 }
 
 int main() {
-	CommandRegistry commandRegistry;
-	ShapeRegistry shapeRegistry;
-	CommandValidator commandValidator(commandRegistry, shapeRegistry);
-	Controller controller(commandRegistry, shapeRegistry, commandValidator, true);
-	controller.run();
+    Controller controller;
+    controller.run();
 
-	return 0;
+    return 0;
 }
