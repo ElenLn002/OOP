@@ -4,14 +4,14 @@
 #include <string>
 #include <map>
 
-class DisplayExecutor {
+class DisplayExecutor : public CommandExecutor {
 public:
-    DisplayExecutor(const std::map<int, std::string>& itemsMap);
-    void execute();
+    DisplayExecutor(int ID, const std::map<int, std::string>& itemsMap);
+    void execute(std::map<int, std::string>& itemsMap) override;
 
 private:
+    int itemID;
     const std::map<int, std::string>& itemsMap;
 };
-
 
 #endif //DISPLAYEXECUTOR_HPP
