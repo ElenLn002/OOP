@@ -4,15 +4,14 @@
 #include <string>
 #include <map>
 
-class SaveExecutor {
+class SaveExecutor : public CommandExecutor {
 public:
-    SaveExecutor(const std::string& filePath, const std::map<int, std::string>& itemsMap);
-
-    void execute();
+    SaveExecutor(std::string filePath, std::map<int, std::string>& itemsMap);
+    void execute(std::map<int, std::string>& itemsMap) override;
 
 private:
     std::string filePath;
-    const std::map<int, std::string>& itemsMap;
+    std::map<int, std::string>& itemsMap;
 };
 
 #endif //SAMOVEEXECUTOR_HPP
