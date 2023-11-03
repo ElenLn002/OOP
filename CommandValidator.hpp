@@ -1,19 +1,21 @@
 #ifndef COMMANDVALIDATOR_HPP
 #define COMMANDVALIDATOR_HPP
 
+#include "CommandRegistry.hpp"
+#include "ShapeRegistry.hpp"
+#include "AttributeRegistry.hpp"
+
 #include <string>
-#include <unordered_set>
 
 class CommandValidator {
 public:
-    CommandValidator();
-    bool validateShapeAttributes(const std::string& shape, const std::unordered_set<std::string>& attributes);
+    CommandValidator(CommandRegistry& cmdRegistry, ShapeRegistry& shapeRegistry, AttributeRegistry& attrRegistry);
+    bool isValidCommand(const std::string& input);
 
 private:
-    std::unordered_set<std::string> circleAttributes;
-    std::unordered_set<std::string> rectangleAttributes;
-    std::unordered_set<std::string> triangleAttributes;
+    CommandRegistry& cmdRegistry;
+    ShapeRegistry& shapeRegistry;
+    AttributeRegistry& attrRegistry;
 };
-
 
 #endif //COMMANDVALIDATOR_HPP
