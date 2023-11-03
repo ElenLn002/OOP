@@ -1,11 +1,15 @@
 #include "DisplayExecutor.hpp"
 
-DisplayExecutor::DisplayExecutor(const std::map<int, std::string>& itemsMap) : itemsMap(itemsMap) {}
+DisplayExecutor::DisplayExecutor(int ID, const std::map<int, std::string>& itemsMap)
+    : itemID(ID), itemsMap(itemsMap) {}
 
-void DisplayExecutor::execute() {
-    std::cout << "Displaying added items:" << std::endl;
-    for (const auto& entry : itemsMap) {
-        std::cout << entry.first << " " << entry.second << std::endl;
+void DisplayExecutor::execute(std::map<int, std::string>& itemsMap) {
+    auto it = itemsMap.find(itemID);
+    if (it != itemsMap.end()) {
+        resultPrinter.printItem(itemID, it->second); 
+    }
+    else {
+        std::cerr << "ID not found: " << itemID << std::endl;
     }
 }
 
