@@ -4,13 +4,13 @@
 #include <string>
 #include <map>
 
-class RemoveExecutor {
+class RemoveExecutor : public CommandExecutor {
 public:
-    RemoveExecutor(int index);
-    void removeFromMap(std::map<int, std::string>& itemsMap);
+    RemoveExecutor(int ID);
+    void execute(std::map<int, std::string>& itemsMap) override;
 
 private:
-    int itemIndex;
+    int itemID;
 };
 
 #endif //REMOVEEXECUTOR_HPP
