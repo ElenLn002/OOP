@@ -1,34 +1,29 @@
 #include "CommandValidator.hpp"
+#include "Tokenizer.hpp"
 
+CommandValidator::CommandValidator(CommandRegistry& cmdRegistry, ShapeRegistry& shapeRegistry, AttributeRegistry& attrRegistry) :
+    cmdRegistry(cmdRegistry), shapeRegistry(shapeRegistry), attrRegistry(attrRegistry) {}
 
-CommandValidator::CommandValidator() {
-    circleAttributes = { "-colour", "-style", "-pos", "-rad" };
-    rectangleAttributes = { "-colour", "-style", "-TL", "-RB" };
-    triangleAttributes = { "-colour", "-style", "-pos" };
-}
+bool CommandValidator::isValidCommand(const std::string& input) {
+    Tokenizer tokenizer;
+    tokenizer.takeTokens(input);
+    std::vector<std::string> tokens = tokenizer.getTokens();
 
-bool CommandValidator::validateShapeAttributes(const std::string& shape, const std::unordered_set<std::string>& attributes) {
-    std::unordered_set<std::string> allowedAttributes;
-
-    if (shape == "circle") {
-        allowedAttributes = circleAttributes;
-    }
-    else if (shape == "rectangle") {
-        allowedAttributes = rectangleAttributes;
-    }
-    else if (shape == "triangle") {
-        allowedAttributes = triangleAttributes;
-    }
-    else {
-        std::cout << "Validation for shape " << shape << " not implemented." << std::endl;
+    if (tokens.size() < 2) {
         return false;
     }
 
-    for (const auto& attr : attributes) 
-        if (attr[0] == '-' && allowedAttributes.find(attr) == allowedAttributes.end()) {
-            std::cout << shape << " cannot have attribute: " << attr << std::endl;
-            return false;
-        }
+    if (!cmdRegistry.isValidCommand(tokens[0])) {
+        return false;
+    }
+
+    if (!shapeRegistry.isValidShape(tokens[1])) {
+        return false;
+    }
+
+    std::vector<std::string> attributes(tokens.begin() + 2, tokens.end());
+    if (!attrRegistry.areValidAttributes(attributes)) {
+        return false;
     }
 
     return true;
