@@ -9,12 +9,11 @@ using ShapeType = std::string;
 class ShapeRegistry {
 public:
     ShapeRegistry();
-    bool isValidShape(const std::string& shapeName);
+    bool isValidShape(const std::string& shape);
 
 private:
-    std::vector<CommandType> ValidShapes;
+    std::vector<std::string> validShapes;
 };
-
 
 
 #endif //SHAPEREGISTRY_HPP
