@@ -1,38 +1,76 @@
 #include "Controller.hpp"
 
-//I know that it would be better to have an abstract class
-//than all the executor classes would be derived classes and would implement handleCommand() pure virtual function for themselves.
-//I have some issues of creating objects of derived classes, so at this point I leave it like it is, as the code works in this way.
+void Controller::run() {
+    CommandRegistry cmdreg;
+    bool flag = true;
+    while (flag) {
+        std::cout << "Enter a command: ";
+        std::string userInput;
+        std::getline(std::cin, userInput);
 
-void Controller::handleAdd(Parser parser) {
-    std::vector<std::string> arguments = parser.getArguments();
-    if (arguments.size() >= 2) {
-        std::string shape = arguments[0];
-        std::unordered_set<std::string> attributes(arguments.begin() + 1, arguments.end());
+        std::istringstream iss(userInput);
+        std::string command;
+        iss >> command;
+        command = trim(command);
 
-        if (shapeRegistry.isValidShape(shape) && commandValidator.validateShapeAttributes(shape, attributes)) {
-            AddExecutor addExecutor(parser.getRestOfTheLine());
-            addExecutor.execute(addedItemsMap);
+        if (cmdreg.isValidCommand(command)) {
+            std::string restOfTheLine = trim(userInput.substr(command.length()));
+
+            if (command == "Add") {
+                handleAdd(restOfTheLine);
+            }
+            else if (command == "Display") {
+                handleDisplay();
+            }
+            else if (command == "Quit") {
+                flag = false;
+            }
+            else if (command == "Remove") {
+                handleRemove(restOfTheLine);
+            }
+            else if (command == "Save") {
+                handleSave(restOfTheLine);
+            }
+            else if (command == "Change") {
+                handleChange(restOfTheLine);
+            }
+            else if (command == "List") {
+                handleList();
+            }
+        }
+        else {
+            std::cerr << "Invalid command." << std::endl;
         }
     }
+}
+
+void Controller::handleAdd(const std::string& restOfTheLine) {
+    AddExecutor addExecutor(restOfTheLine);
+    addExecutor.execute(itemsMap);
+}
+
+void Controller::handleDisplay() {
+    int displayID;
+    std::cout << "Enter the ID to display: ";
+    std::cin >> displayID;
+
+    auto it = itemsMap.find(displayID);
+    if (it != itemsMap.end()) {
+        DisplayExecutor displayExecutor(displayID, itemsMap);
+        displayExecutor.execute(itemsMap);
+    }
     else {
-        std::cerr << "Invalid arguments for Add command." << std::endl;
+        std::cerr << "ID not found: " << displayID << std::endl;
     }
 }
 
-
-void Controller::handleDisplay(Parser parser) {
-    DisplayExecutor displayExecutor(addedItemsMap);
-    displayExecutor.execute();
-}
-
-void Controller::handleRemove(Parser parser) {
-    if (parser.getArguments().size() == 1) {
+void Controller::handleRemove(const std::string& restOfTheLine) {
+    if (!restOfTheLine.empty()) {
         int indexToRemove;
         try {
-            indexToRemove = std::stoi(parser.getArguments()[0]);
+            indexToRemove = std::stoi(restOfTheLine);
             RemoveExecutor removeExecutor(indexToRemove);
-            removeExecutor.execute(addedItemsMap);
+            removeExecutor.execute(itemsMap);
         }
         catch (const std::invalid_argument& e) {
             std::cerr << "Invalid index for Remove command." << std::endl;
@@ -43,77 +81,33 @@ void Controller::handleRemove(Parser parser) {
     }
 }
 
-void Controller::handleSave(Parser parser) {
-    std::string filePath = parser.getRestOfTheLine();
-    filePath = filePath.substr(filePath.find_first_not_of(" "), filePath.find_last_not_of(" ") + 1);
-
-    SaveExecutor saveExecutor(filePath, addedItemsMap);
-    saveExecutor.execute();
+void Controller::handleSave(const std::string& restOfTheLine) {
+    if (!restOfTheLine.empty()) {
+        std::string filePath = trim(restOfTheLine);
+        SaveExecutor saveExecutor(filePath, itemsMap);
+        saveExecutor.execute(itemsMap);
+    }
+    else {
+        std::cerr << "Invalid arguments for Save command." << std::endl;
+    }
 }
 
-void Controller::handleQuit(Parser parser) {
-    QuitExecutor quitExecutor;
-    quitExecutor.execute();
-}
+void Controller::handleChange(const std::string& restOfTheLine) {
+    std::istringstream argStream(restOfTheLine);  
+    int indexToChange;
+    argStream >> indexToChange;
+    std::string newArguments = trim(restOfTheLine.substr(restOfTheLine.find_first_of(" ") + 1));
 
-void Controller::handleChange(Parser parser) {
-    if (parser.getArguments().size() >= 2) {
-        int indexToChange;
-        try {
-            indexToChange = std::stoi(parser.getArguments()[0]);
-            std::string newArguments = parser.getRestOfTheLine();
-            ChangeExecutor changeExecutor(indexToChange, newArguments);
-            changeExecutor.execute(addedItemsMap);
-        }
-        catch (const std::invalid_argument& e) {
-            std::cerr << "Invalid index for Change command." << std::endl;
-        }
+    if (argStream && !newArguments.empty()) {
+        ChangeExecutor changeExecutor(indexToChange, newArguments);
+        changeExecutor.execute(itemsMap);
     }
     else {
         std::cerr << "Invalid arguments for Change command." << std::endl;
     }
 }
-void Controller::handleLoad(Parser parser) {
-    LoadExecutor loadExecutor(addedItemsMap);
-    loadExecutor.execute();
 
-}
-
-void Controller::run() {
-    while (true) {
-        std::cout << "Enter a command: ";
-        std::getline(std::cin, userInput);
-
-        Parser parser(userInput, registry);
-        parser.parse();
-
-        if (parser.isValidCommand()) {
-            std::cout << "Valid command: " << parser.getCommand() << std::endl;
-
-            if (parser.getCommand() == "Add") {
-                handleAdd(parser);
-            }
-            else if (parser.getCommand() == "Display") {
-                handleDisplay(parser);
-            }
-            else if (parser.getCommand() == "Quit") {
-                handleQuit(parser);
-            }
-            else if (parser.getCommand() == "Remove") {
-                handleRemove(parser);
-            }
-            else if (parser.getCommand() == "Save") {
-                handleSave(parser);
-            }
-            else if (parser.getCommand() == "Change") {
-                handleChange(parser);
-            }
-            else if (parser.getCommand() == "Load") {
-                handleLoad(parser);
-            }
-            else {
-                std::cerr << "Invalid command." << std::endl;
-            }
-        }
-    }
+void Controller::handleList() {
+    ListExecutor listExecutor(itemsMap);
+    listExecutor.execute(itemsMap);
 }
