@@ -1,41 +1,37 @@
 #ifndef CONTROLLER_HPP
 #define CONTROLLER_HPP
 
-#include <fstream>
 #include <iostream>
-#include <sstream>
 #include <vector>
-#include <stdexcept>
-#include <unordered_set>
+#include <string>
 #include <map>
+#include <any>
+#include <memory>
+#include <iterator>
+#include <unordered_map>
+#include <fstream>
+#include <sstream>
+
 
 #include "CommandRegistry.hpp"
 #include "CommandValidator.hpp"
 #include "ShapeRegistry.hpp"
 #include "Parser.hpp"
-
-
+#include "Utils.hpp"
 
 class Controller {
 public:
     void run();
 
-public:
-    void handleAdd(Parser);
-    void handleDisplay(Parser);
-    void handleRemove(Parser);
-    void handleSave(Parser);
-    void handleQuit(Parser);
-    void handleChange(Parser);
-    void handleLoad(Parser);
-
 private:
-    CommandRegistry registry;
-    std::string userInput;
-    std::map<int, std::string> addedItemsMap;
+    std::map<int, std::string> itemsMap;
 
-    ShapeRegistry shapeRegistry;
-    CommandValidator commandValidator;
+    void handleAdd(const std::string& restOfTheLine);
+    void handleDisplay();
+    void handleRemove(const std::string& restOfTheLine);
+    void handleSave(const std::string& restOfTheLine);
+    void handleChange(const std::string& restOfTheLine);
+    void handleList();
 };
 
 #endif //CONTROLLER_HPP
