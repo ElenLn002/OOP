@@ -1,14 +1,13 @@
 #include "RemoveExecutor.hpp"
 
-RemoveExecutor::RemoveExecutor(int index) : itemIndex(index) {}
+RemoveExecutor::RemoveExecutor(int ID) : itemID(ID) {}
 
-void RemoveExecutor::removeFromMap(std::map<int, std::string>& itemsMap) {
-    auto it = itemsMap.find(itemIndex);
+void RemoveExecutor::execute(std::map<int, std::string>& itemsMap) {
+    auto it = itemsMap.find(itemID);
     if (it != itemsMap.end()) {
         itemsMap.erase(it);
-        std::cout << "Item with index " << itemIndex << " removed." << std::endl;
     }
     else {
-        std::cerr << "Item with index " << itemIndex << " not found. No item removed." << std::endl;
+        std::cerr << "ID not found" << std::endl;
     }
 }
