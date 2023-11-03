@@ -7,10 +7,10 @@
 class CommandRegistry {
 public:
     CommandRegistry();
-    bool isValidCommand(const std::string& commandName);
+    bool isValidCommand(const std::string& cmd);
 
 private:
-    std::vector<CommandType> ValidCommands;
+    std::vector<std::string> validCommands;
 };
 
 #endif// COMMANDREGISTRY_HPP
