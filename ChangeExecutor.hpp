@@ -4,14 +4,14 @@
 #include <map>
 #include<string>
 
-class ChangeExecutor {
+class ChangeExecutor : public CommandExecutor {
 public:
-    ChangeExecutor(int index, const std::string& newArguments);
-    void execute(std::map<int, std::string>& itemsMap);
+    ChangeExecutor(int ID, std::string& newAttributes);
+    void execute(std::map<int, std::string>& itemsMap) override;
 
 private:
-    int itemIndex;
-    std::string newArguments;
+    int itemID;
+    std::string newAttributes;
 };
 
 #endif // CHANGEEXECUTOR_HPP
