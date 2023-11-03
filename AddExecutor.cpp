@@ -1,15 +1,16 @@
 #include "AddExecutor.hpp"
 
-AddExecutor::AddExecutor(const std::string& restOfTheLine) {
-    std::istringstream iss(restOfTheLine);
+AddExecutor::AddExecutor(std::string restOfLine) {
+    std::istringstream iss(restOfLine);
     std::string token;
     while (iss >> token) {
-        if (token[0] != '-')
-            addedItems += token + " ";
+        if (token[0] != '-') {
+            addedAttributes += token + " ";
+        }
     }
 }
 
 void AddExecutor::execute(std::map<int, std::string>& itemsMap) {
-    static int index = 1;
-    itemsMap[index++] = addedItems;
+    static int ID = 1;
+    itemsMap[ID++] = addedAttributes;
 }
