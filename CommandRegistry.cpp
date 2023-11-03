@@ -3,11 +3,11 @@
 #include<string>
 
 CommandRegistry::CommandRegistry() :
-    ValidCommands{ "Add", "Remove", "Quit", "Display", "Save", "Load", "Change" } {}
+    validCommands{ "Add", "Remove", "Save", "Display", "List", "Change", "Quit" } {}
 
 bool CommandRegistry::isValidCommand(const std::string& commandName) {
-    for (const auto& cmd : ValidCommands) {
-        if (commandName == cmd) {
+    for (const auto& input : validCommands) {
+        if (commandName == input) {
             return true;
         }
     }
