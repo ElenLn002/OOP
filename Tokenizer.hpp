@@ -6,10 +6,11 @@
 
 class Tokenizer {
 public:
-    void takeTokens(const std::string& input);
-    std::vector<std::string> getTokens();
+    void takeTokens(const std::string input);
+    std::vector<std::string> getTokens() const;
 
 private:
+    std::string token;
     std::vector<std::string> tokens;
 };
 
