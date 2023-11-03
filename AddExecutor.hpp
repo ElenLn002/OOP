@@ -1,16 +1,16 @@
 #ifndef ADDEXECUTOR_HPP
 #define ADDEXECUTOR_HPP
 
-#include <string>
 #include <map>
+#include <string>
 
-class AddExecutor {
+class AddExecutor : public CommandExecutor {
 public:
-    AddExecutor(const std::string& restOfTheLine);
-    void addToMap(std::map<int, std::string>& itemsMap);
+    AddExecutor(std::string restOfLine);
+    void execute(std::map<int, std::string>& itemsMap) override;
 
 private:
-    std::string addedItems;
+    std::string addedAttributes;
 };
 
 
