@@ -17,31 +17,51 @@ void Controller::run() {
             std::string restOfTheLine = trim(userInput.substr(command.length()));
 
             if (command == "Add") {
+                undoStack.push(itemsMap);
                 handleAdd(restOfTheLine);
             }
             else if (command == "Display") {
-                handleDisplay();
+                handleDisplay(restOfTheLine);
             }
             else if (command == "Quit") {
                 flag = false;
             }
             else if (command == "Remove") {
+                undoStack.push(itemsMap);
                 handleRemove(restOfTheLine);
             }
             else if (command == "Save") {
                 handleSave(restOfTheLine);
             }
             else if (command == "Change") {
+                undoStack.push(itemsMap);
                 handleChange(restOfTheLine);
             }
             else if (command == "List") {
                 handleList();
             }
+            else if (command == "Undo") {
+                handleUndo();
+            }
+            else if (command == "Redo") {
+                handleRedo();
+            }
         }
         else {
             std::cerr << "Invalid command." << std::endl;
         }
+    
     }
+}
+
+void Controller::handleUndo() {
+    Undo undo(undoStack, redoStack, itemsMap);
+    undo.execute();
+}
+
+void Controller::handleRedo() {
+    Redo redo(undoStack, redoStack, itemsMap);
+    redo.execute();
 }
 
 void Controller::handleAdd(const std::string& restOfTheLine) {
