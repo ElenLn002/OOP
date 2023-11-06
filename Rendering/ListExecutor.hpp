@@ -1,13 +1,13 @@
 #ifndef LISTEXECUTOR_HPP
 #define LISTEXECUTOR_HPP
 
-#include "CommandExecutor.hpp"
+#include "RenderingInterface.hpp"
 
 #include <map>
 #include <string>
 
 
-class ListExecutor : public CommandExecutor {
+class ListExecutor : public RenderingInterface {
 public:
     ListExecutor(const std::map<int, std::string>& itemsMap);
     void execute(std::map<int, std::string>& itemsMap) override;
