@@ -1,6 +1,11 @@
 #ifndef DISPLAYEXECUTOR_HPP
 #define DISPLAYEXECUTOR_HPP
 
+#include <map>
+#include <string>
+
+#include "RenderingInterface.hpp"
+
 class DisplayExecutor : public RenderingInterface {
 public:
     DisplayExecutor(int ID, const std::map<int, std::string>& itemsMap);
