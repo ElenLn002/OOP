@@ -17,31 +17,51 @@ void Controller::run() {
             std::string restOfTheLine = trim(userInput.substr(command.length()));
 
             if (command == "Add") {
+                undoStack.push(itemsMap);
                 handleAdd(restOfTheLine);
             }
             else if (command == "Display") {
-                handleDisplay();
+                handleDisplay(restOfTheLine);
             }
             else if (command == "Quit") {
                 flag = false;
             }
             else if (command == "Remove") {
+                undoStack.push(itemsMap);
                 handleRemove(restOfTheLine);
             }
             else if (command == "Save") {
                 handleSave(restOfTheLine);
             }
             else if (command == "Change") {
+                undoStack.push(itemsMap);
                 handleChange(restOfTheLine);
             }
             else if (command == "List") {
                 handleList();
             }
+            else if (command == "Undo") {
+                handleUndo();
+            }
+            else if (command == "Redo") {
+                handleRedo();
+            }
         }
         else {
             std::cerr << "Invalid command." << std::endl;
         }
+    
     }
+}
+
+void Controller::handleUndo() {
+    Undo undo(undoStack, redoStack, itemsMap);
+    undo.execute();
+}
+
+void Controller::handleRedo() {
+    Redo redo(undoStack, redoStack, itemsMap);
+    redo.execute();
 }
 
 void Controller::handleAdd(const std::string& restOfTheLine) {
@@ -49,35 +69,36 @@ void Controller::handleAdd(const std::string& restOfTheLine) {
     addExecutor.execute(itemsMap);
 }
 
-void Controller::handleDisplay() {
-    int displayID;
-    std::cout << "Enter the ID to display: ";
-    std::cin >> displayID;
 
-    auto it = itemsMap.find(displayID);
-    if (it != itemsMap.end()) {
+  void Controller::handleDisplay(const std::string& restOfTheLine) {
+    std::istringstream argStream(restOfTheLine);
+    int displayID;
+    argStream >> displayID;
+
+    if (argStream) {
         DisplayExecutor displayExecutor(displayID, itemsMap);
         displayExecutor.execute(itemsMap);
     }
     else {
-        std::cerr << "ID not found: " << displayID << std::endl;
+        std::cerr << "Error: Invalid ID for Display command." << std::endl;
     }
 }
 
+
 void Controller::handleRemove(const std::string& restOfTheLine) {
     if (!restOfTheLine.empty()) {
-        int indexToRemove;
+        int itemID;
         try {
-            indexToRemove = std::stoi(restOfTheLine);
-            RemoveExecutor removeExecutor(indexToRemove);
+            itemID = std::stoi(restOfTheLine);
+            RemoveExecutor removeExecutor(itemID);
             removeExecutor.execute(itemsMap);
         }
         catch (const std::invalid_argument& e) {
-            std::cerr << "Invalid index for Remove command." << std::endl;
+            std::cerr << "Error: Invalid ID for Remove command." << std::endl;
         }
     }
     else {
-        std::cerr << "Invalid arguments for Remove command." << std::endl;
+        std::cerr << "Error: Invalid arguments for Remove command." << std::endl;
     }
 }
 
