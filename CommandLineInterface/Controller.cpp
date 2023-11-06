@@ -69,35 +69,36 @@ void Controller::handleAdd(const std::string& restOfTheLine) {
     addExecutor.execute(itemsMap);
 }
 
-void Controller::handleDisplay() {
-    int displayID;
-    std::cout << "Enter the ID to display: ";
-    std::cin >> displayID;
 
-    auto it = itemsMap.find(displayID);
-    if (it != itemsMap.end()) {
+  void Controller::handleDisplay(const std::string& restOfTheLine) {
+    std::istringstream argStream(restOfTheLine);
+    int displayID;
+    argStream >> displayID;
+
+    if (argStream) {
         DisplayExecutor displayExecutor(displayID, itemsMap);
         displayExecutor.execute(itemsMap);
     }
     else {
-        std::cerr << "ID not found: " << displayID << std::endl;
+        std::cerr << "Error: Invalid ID for Display command." << std::endl;
     }
 }
 
+
 void Controller::handleRemove(const std::string& restOfTheLine) {
     if (!restOfTheLine.empty()) {
-        int indexToRemove;
+        int itemID;
         try {
-            indexToRemove = std::stoi(restOfTheLine);
-            RemoveExecutor removeExecutor(indexToRemove);
+            itemID = std::stoi(restOfTheLine);
+            RemoveExecutor removeExecutor(itemID);
             removeExecutor.execute(itemsMap);
         }
         catch (const std::invalid_argument& e) {
-            std::cerr << "Invalid index for Remove command." << std::endl;
+            std::cerr << "Error: Invalid ID for Remove command." << std::endl;
         }
     }
     else {
-        std::cerr << "Invalid arguments for Remove command." << std::endl;
+        std::cerr << "Error: Invalid arguments for Remove command." << std::endl;
     }
 }
 
