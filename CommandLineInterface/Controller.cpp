@@ -33,6 +33,9 @@ void Controller::run() {
             else if (command == "Save") {
                 handleSave(restOfTheLine);
             }
+            else if (command == "Load") {
+                handleLoad(restOfTheLine);
+            }
             else if (command == "Change") {
                 undoStack.push(itemsMap);
                 handleChange(restOfTheLine);
@@ -69,8 +72,7 @@ void Controller::handleAdd(const std::string& restOfTheLine) {
     addExecutor.execute(itemsMap);
 }
 
-
-  void Controller::handleDisplay(const std::string& restOfTheLine) {
+void Controller::handleDisplay(const std::string& restOfTheLine) {
     std::istringstream argStream(restOfTheLine);
     int displayID;
     argStream >> displayID;
@@ -81,6 +83,17 @@ void Controller::handleAdd(const std::string& restOfTheLine) {
     }
     else {
         std::cerr << "Error: Invalid ID for Display command." << std::endl;
+    }
+}
+
+void Controller::handleLoad(const std::string& restOfTheLine) {
+    if (!restOfTheLine.empty()) {
+        std::string filePath = trim(restOfTheLine);
+        LoadExecutor loadExecutor(filePath, &INITIAL_ITEM_ID); // Pass the pointer
+        loadExecutor.execute(itemsMap);
+    }
+    else {
+        std::cerr << "Invalid arguments for Load command." << std::endl;
     }
 }
 
@@ -102,6 +115,7 @@ void Controller::handleRemove(const std::string& restOfTheLine) {
     }
 }
 
+
 void Controller::handleSave(const std::string& restOfTheLine) {
     if (!restOfTheLine.empty()) {
         std::string filePath = trim(restOfTheLine);
@@ -114,7 +128,7 @@ void Controller::handleSave(const std::string& restOfTheLine) {
 }
 
 void Controller::handleChange(const std::string& restOfTheLine) {
-    std::istringstream argStream(restOfTheLine);  
+    std::istringstream argStream(restOfTheLine);
     int indexToChange;
     argStream >> indexToChange;
     std::string newArguments = trim(restOfTheLine.substr(restOfTheLine.find_first_of(" ") + 1));
