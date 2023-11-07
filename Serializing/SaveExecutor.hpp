@@ -4,7 +4,9 @@
 #include <string>
 #include <map>
 
-class SaveExecutor : public CommandExecutor {
+#include "SerializingInterface.hpp"
+
+class SaveExecutor : public SerializingInterface {
 public:
     SaveExecutor(std::string filePath, std::map<int, std::string>& itemsMap);
     void execute(std::map<int, std::string>& itemsMap) override;
