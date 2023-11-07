@@ -32,10 +32,9 @@ private:
     void handleDisplay(const std::string& restOfTheLine);
     void handleRemove(const std::string& restOfTheLine);
     void handleSave(const std::string& restOfTheLine);
+    void handleLoad(const std::string& restOfTheLine);
     void handleChange(const std::string& restOfTheLine);
     void handleList();
     void handleUndo();
     void handleRedo();
 };
-
-#endif //CONTROLLER_HPP
