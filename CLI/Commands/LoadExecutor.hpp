@@ -1,7 +1,7 @@
 #ifndef LOADEXECUTOR_HPP
 #define LOADEXECUTOR_HPP
 
-#include "SerializingInterface.hpp"
+#include "CommandExecutor.hpp"
 
 class LoadExecutor : public CommandExecutor {
 public:
