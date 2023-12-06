@@ -1,17 +1,12 @@
-#include "ActionInterface.hpp"
+#ifndef UNDO_HPP
+#define UNDO_HPP
 
-#include <iostream>
-#include <stack>
-#include <map>
-#include <string>
+#include "CommandExecutor.hpp"
 
-class Undo : public ActionInterface {
+
+class Undo : public CommandExecutor {
 public:
-    Undo(std::stack<std::map<int, std::string>>& undoStack, std::stack<std::map<int, std::string>>& redoStack, std::map<int, std::string>& itemsMap);
     void execute() override;
-
-private:
-    std::stack<std::map<int, std::string>>& undoStack;
-    std::stack<std::map<int, std::string>>& redoStack;
-    std::map<int, std::string>& itemsMap;
 };
+
+#endif // UNDO_HPP
