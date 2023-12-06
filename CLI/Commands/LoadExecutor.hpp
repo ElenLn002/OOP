@@ -3,14 +3,9 @@
 
 #include "SerializingInterface.hpp"
 
-class LoadExecutor : public SerializingInterface {
+class LoadExecutor : public CommandExecutor {
 public:
-    LoadExecutor(const std::string& filePath, int* initialItemID);
-    void execute(std::map<int, std::string>& itemsMap) override;
-
-private:
-    std::string filePath;
-    int* initialItemID;
+    void execute() override;
 };
 
 #endif //LOADEXECUTOR_HPP
