@@ -6,11 +6,7 @@
 
 class AddExecutor : public CommandExecutor {
 public:
-    AddExecutor(std::string restOfLine);
-    void execute(std::map<int, std::string>& itemsMap) override;
-
-private:
-    std::string addedAttributes;
+    void execute() override;
 };
 
 
