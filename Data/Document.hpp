@@ -5,10 +5,9 @@
 
 class Document {
 public:
-    Document()=default;
-
     void addSlide(const std::shared_ptr<Slide>& slide);
-    const std::vector<std::shared_ptr<Slide>>& getSlides() const;
+    void removeSlide(int slideID);
+    std::shared_ptr<Slide> getSlide(int slideID) const;
 
 private:
     std::vector<std::shared_ptr<Slide>> slides;

@@ -13,7 +13,7 @@ public:
     std::string getPosition() const;
     std::string getAttributes() const;
     int getID() const;
-    
+
     void setAttributes(const std::string& attributes);
     void setPosition(const std::string& pos);
 
