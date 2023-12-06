@@ -3,17 +3,9 @@
 
 #include "RenderingInterface.hpp"
 
-#include <map>
-#include <string>
-
-
-class ListExecutor : public RenderingInterface {
+class ListExecutor : public CommandExecutor {
 public:
-    ListExecutor(const std::map<int, std::string>& itemsMap);
-    void execute(std::map<int, std::string>& itemsMap) override;
-
-private:
-    const std::map<int, std::string>& itemsMap;
+    void execute() override;
 };
 
 #endif // !LISTEXECUTOR_HPP
