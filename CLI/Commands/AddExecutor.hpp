@@ -1,8 +1,7 @@
 #ifndef ADDEXECUTOR_HPP
 #define ADDEXECUTOR_HPP
 
-#include <map>
-#include <string>
+#include "CommandExecutor.hpp"
 
 class AddExecutor : public CommandExecutor {
 public:
