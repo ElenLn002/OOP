@@ -11,7 +11,7 @@ shapeType Item::getShape() const {
     return shape;
 }
 
-std::string Item::getPosition() const {
+std::string Item::getPosition() const { //I just do not like the name geometry
     return pos;
 }
 
