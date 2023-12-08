@@ -2,6 +2,7 @@
 #define CHANGESLIDEID_HPP
 
 #include <memory>
+#include "IAction"
 
 class ChangeSlideID : public IAction {
     size_t slideNumber;
