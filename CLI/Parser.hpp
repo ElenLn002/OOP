@@ -10,15 +10,18 @@ class Parser {
 public:
     Parser(const std::string& input, CommandRegistry& registry);
 
-    void parse();
+    std::unique_ptr<Command> parse();
+
 
 private:
     std::string input;
     CommandRegistry& registry;
-    std::string command;  
-    std::vector<std::string> items;  
-    std::string restOfLine; 
-    bool validCommand;  
+
+    std::string command;
+    std::unordered_map<int, std::string> attributesMap;
+    bool validCommand;
+
+    void parseInput();
 };
 
 #endif //PARSER_HPP
