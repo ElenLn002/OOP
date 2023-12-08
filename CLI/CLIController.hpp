@@ -1,6 +1,7 @@
 #ifndef CLICONTROLLER_HPP
 #define CLICONTROLLER_HPP
 
+#include <memory>
 #include <string>
 #include <sstream>
 
