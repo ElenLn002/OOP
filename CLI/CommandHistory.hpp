@@ -6,7 +6,7 @@
 
 class CommandHistory{
 public:
-  void addToHistory(std::string addedCmd);
+  void addToHistory(std::string& addedCmd);
 
 private:
   std::vector<std::string> history;
