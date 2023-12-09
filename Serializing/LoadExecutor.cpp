@@ -1,7 +1,7 @@
-#include "LoadExecutor.hpp"
+#include "LoadDocument.hpp"
+#include "Includes.hpp"
 
-LoadExecutor::LoadExecutor(const std::string& filePath, int* initialItemID) : filePath(filePath), initialItemID(initialItemID) {}
-
+//will be changed
 void LoadExecutor::execute(std::map<int, std::string>& itemsMap) {
     std::ifstream inputFile(filePath);
 
