@@ -1,9 +1,9 @@
-#ifndef ADDEXECUTOR_HPP
-#define ADDEXECUTOR_HPP
+#ifndef ADD_HPP
+#define ADD_HPP
 
 #include "CommandExecutor.hpp"
 
-class AddExecutor : public CommandExecutor {
+class Add : public CommandExecutor {
 public:
     void execute() override;
 };
