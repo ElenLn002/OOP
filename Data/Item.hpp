@@ -5,23 +5,33 @@
 
 using shapeType = std::string;
 
+struct Coordinate {
+    int x;
+    int y;
+};
+
 class Item {
 public:
-    Item(int ID, const shapeType& shape, const std::string& pos, const std::string& attributes);
+    Item(int ID, const shapeType& shape, Coordinate& pos, const std::string& attributes);
 
+    void setShape(shapeType shape);
     shapeType getShape() const;
-    std::string getPosition() const;
+
+    void setGeom(Coordinate& coord);
+    Coordinate getGeom() const;
+
+    void setAttributes(std::string& attributes);
     std::string getAttributes() const;
+
+    void setID(int ID);
     int getID() const;
 
     void setAttributes(const std::string& attributes);
-    void setPosition(const std::string& pos);
 
 private:
     std::string attributes;
     shapeType shape;
-    std::string pos;
+    Coordinate pos;
     int ID;
 };
-
 #endif //ITEM_HPP
