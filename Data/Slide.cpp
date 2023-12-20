@@ -1,4 +1,4 @@
-#include "Slide.hpp
+#include "Slide.hpp"
 
 void Slide::addItem(const std::shared_ptr<Item>& item) {
     itemsMap[item->getID()] = item;
