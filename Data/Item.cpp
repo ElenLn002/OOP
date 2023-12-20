@@ -4,14 +4,22 @@ int Item::getID() const {
     return ID;
 }
 
-Item::Item(int ID, const shapeType& shape, const std::string& pos, const std::string& attributes) :
+Item::Item(int ID, const shapeType& shape, Coordinate& pos, const std::string& attributes) :
     ID(ID), shape(shape), pos(pos), attributes(attributes) {}
+
+void Item::setID(int ID) {
+    this->ID = ID;
+}
+
+void Item::setAttributes(std::string& attributes) {
+    this->attributes = attributes;
+}
 
 shapeType Item::getShape() const {
     return shape;
 }
 
-std::string Item::getPosition() const { //I just do not like the name geometry
+Coordinate Item::getGeom() const {
     return pos;
 }
 
@@ -23,6 +31,10 @@ void Item::setAttributes(const std::string& attributes) {
     this->attributes = attributes;
 }
 
-void Item::setPosition(const std::string& pos) {
+void Item::setShape(shapeType shape) {
+    this->shape = shape;
+}
+
+void Item::setGeom(Coordinate& pos) {
     this->pos = pos;
 }
