@@ -4,18 +4,17 @@
 #include <string>
 #include <vector>
 
-#include "CommandRegistry.hpp"
+#include "ConcreteCommandFactory.hpp"
 
 class Parser {
 public:
-    Parser(const std::string& input, CommandRegistry& registry);
+    Parser(const std::string& input, CommandFactory& factory);
 
     std::unique_ptr<Command> parse();
 
-
 private:
     std::string input;
-    CommandRegistry& registry;
+    CommandFactory& factory;
 
     std::string command;
     std::unordered_map<int, std::string> attributesMap;
@@ -23,5 +22,4 @@ private:
 
     void parseInput();
 };
-
 #endif //PARSER_HPP
