@@ -9,8 +9,11 @@ public:
     void removeSlide(int slideID);
     std::shared_ptr<Slide> getSlide(int slideID) const;
 
+    size_t getNumSlides() const {
+        return slides.size();
+    }
+
 private:
     std::vector<std::shared_ptr<Slide>> slides;
 };
-
 #endif //DOCUMENT_HPP
