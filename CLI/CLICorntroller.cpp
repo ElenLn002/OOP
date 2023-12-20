@@ -3,7 +3,7 @@
 #include "Includes.hpp"
 
 std::unique_ptr<Command> CLIController::parseCommand(const std::string& input) {
-    Parser parser(input, registry_);
+    Parser parser(input, factory_);
     return parser.parse();
 }
 
@@ -20,4 +20,3 @@ void CLIController::executeCommands(std::istream& inputStream) {
         }
     }
 }
-
