@@ -1,27 +1,32 @@
 #include "Parser.hpp"
 
-Parser::Parser(const std::string& input, CommandRegistry& registry)
-    : input(input), registry(registry), validCommand(false) {
+Parser::Parser(const std::string& input, CommandFactory& factory)
+    : input(input), factory(factory), validCommand(false) {
     parseInput();
 }
 
 void Parser::parseInput() {
     std::istringstream iss(input);
     Tokenizer tokenizer;
-    tokenizer.takeTokens(iss);  // Pass the stream to takeTokens
+    tokenizer.takeTokens(iss);
     std::vector<std::string> tokens = tokenizer.getTokens();
 
     if (!tokens.empty()) {
         command = tokens[0];
-        validCommand = registry.isValidCommand(command);
+        // Factory does not have isValidCommand, assuming we need to create the command to check validity
+        std::unique_ptr<Command> tempCommand = factory.createCommand(command);
 
-        // Clear the attributes map before populating it
-        attributesMap.clear();
+        if (tempCommand) {
+            validCommand = true;
 
-        // Assuming attributes start from the second token onwards
-        for (size_t i = 1; i < tokens.size(); ++i) {
-            // Store each attribute in the unordered map with its corresponding index
-            attributesMap[i - 1] = tokens[i];
+            attributesMap.clear();
+            // Extract attributes if available
+            for (size_t i = 1; i < tokens.size(); ++i) {
+                attributesMap[i - 1] = tokens[i];
+            }
+        }
+        else {
+            validCommand = false;
         }
     }
 }
@@ -32,33 +37,9 @@ std::unique_ptr<Command> Parser::parse() {
         return nullptr;
     }
 
-    // Create the appropriate command based on the parsed input
-    std::unique_ptr<Command> commandObj;
-    if (command == "Add") {
-        commandObj = std::make_unique<Add>();
-    }
-    else if (command == "Remove") {
-        commandObj = std::make_unique<Remove>();
-    }
-    else if (command == "Change") {
-        commandObj = std::make_unique<Change>();
-    }
-    else if (command == "Display") {
-        commandObj = std::make_unique<Display>();
-    }
-    else if (command == "List") {
-        commandObj = std::make_unique<List>();
-    }
-    else if (command == "Save") {
-        commandObj = std::make_unique<Save>();
-    }
-    else if (command == "Load") {
-        commandObj = std::make_unique<Load>();
-    }
-    else if (command == "Quit") {
-        commandObj = std::make_unique<Quit>();
-    }
-    else {
+    std::unique_ptr<Command> commandObj = factory.createCommand(command);
+
+    if (!commandObj) {
         std::cout << "Unknown command." << std::endl;
         return nullptr;
     }
