@@ -1,10 +1,10 @@
-#ifndef COMMANDEXECUTOR_HPP
-#define COMMANDEXECUTOR_HPP
+#ifndef COMMAND_HPP
+#define COMMAND_HPP
 
 #include <map>
 #include <string>
 
-class CommandExecutor {
+class Command {
 public:
     virtual void execute() = 0;
 
@@ -25,4 +25,4 @@ protected:
     const std::string& type;
 };
 
-#endif // COMMANDEXECUTOR_HPP
+#endif // COMMAND_HPP
