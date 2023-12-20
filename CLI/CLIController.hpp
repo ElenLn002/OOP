@@ -6,17 +6,18 @@
 #include <sstream>
 
 #include "CommandHistory.hpp"
-#include "CommandRegistry.hpp"
 
 
-class CLIController {
+class CLIController{
 public:
-    void executeCommands(std::istream& inputStream);
+    CLIController(CommandFactory & factory) : factory_(factory) {}
+
+    void executeCommands(std::istream & inputStream);
 
 private:
-    CommandRegistry registry_;
+    CommandFactory& factory_;
     CommandHistory history_;
 
-    std::unique_ptr<Command> run(const std::string& input);
+    std::unique_ptr<Command> parseCommand(const std::string& input);
 };
 #endif //CLICONTROLLER_HPP
