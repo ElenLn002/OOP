@@ -1,9 +1,9 @@
-#include "ChangeExecutor.hpp"
+#include "Change.hpp"
 
-ChangeExecutor::ChangeExecutor(int ID, std::string& newAttributes) :
+Change::Change(int ID, std::string& newAttributes) :
     itemID(ID), newAttributes(newAttributes) {}
 
-void ChangeExecutor::execute(std::map<int, std::string>& itemsMap) {
+void Change::execute(std::map<int, std::string>& itemsMap) {
     auto it = itemsMap.find(itemID);
     if (it != itemsMap.end()) {
         it->second = newAttributes;
