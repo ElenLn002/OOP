@@ -1,4 +1,4 @@
-#include "CommandExecutor.hpp"
+#include "Command.hpp"
 
 bool CommandExecutor::isItem(const std::string& type) {
     return type == "item";
