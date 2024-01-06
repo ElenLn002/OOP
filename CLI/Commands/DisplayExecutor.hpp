@@ -1,9 +1,9 @@
 #ifndef DISPLAYEXECUTOR_HPP
 #define DISPLAYEXECUTOR_HPP
 
-#include "CommandExxecutor.hpp"
+#include "Command.hpp"
 
-class DisplayExecutor : public CommandExecutor {
+class Display : public Command {
 public:
     void execute() override;
 };
