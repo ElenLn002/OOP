@@ -16,4 +16,5 @@ public:
 private:
     std::vector<std::shared_ptr<Slide>> slides;
 };
+
 #endif //DOCUMENT_HPP
