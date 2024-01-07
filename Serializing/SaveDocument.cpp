@@ -1,5 +1,4 @@
 #include "SaveDocument.hpp"
-
 #include "Includes.hpp"
 
 void SaveDocument::execute(const std::string& filename, std::shared_ptr<Document> doc) {
