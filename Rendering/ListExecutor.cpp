@@ -4,5 +4,4 @@ ListExecutor::ListExecutor(const std::map<int, std::string>& itemsMap)
     : itemsMap(itemsMap) {}
 
 void ListExecutor::execute(std::map<int, std::string>& itemsMap) {
-    resultPrinter.printItems(itemsMap); // Delegate the printing to ResultPrinter
-}
+    resultPrinter.printItems(itemsMap); 
