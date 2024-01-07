@@ -11,6 +11,5 @@ void DisplayExecutor::execute(std::map<int, std::string>& itemsMap) {
         else {
             std::cerr << "ID not found: " << itemID << std::endl;
         }
-    
 }
 
