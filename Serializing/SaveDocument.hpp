@@ -10,6 +10,7 @@
 class SaveDocument {
 public:
     void execute(const std::string& filename, std::shared_ptr<Document> doc);
+
 };
 
 #endif //SAVEDOCUMENT_HPP
