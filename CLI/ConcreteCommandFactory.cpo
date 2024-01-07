@@ -1,0 +1,46 @@
+#include "ConcreteCommandFactory.hpp"
+#include "Add.hpp"
+#include "Remove.hpp"
+#include "Change.hpp"
+#include "Display.hpp"
+#include "List.hpp"
+#include "Save.hpp"
+#include "Load.hpp"
+#include "Undo.hpp"
+#include "Redo.hpp"
+
+#include <memory>
+
+
+std::unique_ptr<Command> ConcreteCommandFactory::createCommand(const std::string& commandType) {
+    if (registry_.isValidCommand(commandType)) {
+        if (commandType == "Add") {
+            return  std::make_unique<Add>();
+        }
+        else if (commandType == "Remove") {
+            return std::make_unique<Remove>();
+        }
+        else if (commandType == "Change") {
+            return std::make_unique<Change>();
+        }
+        else if (commandType == "Display") {
+            return std::make_unique<Display>();
+        }
+        else if (commandType == "List") {
+            return std::make_unique<List>();
+        }
+        else if (commandType == "Save") {
+            return std::make_unique<Save>();
+        }
+        else if (commandType == "Load") {
+            return std::make_unique<Load>();
+        }
+        else if (commandType == "Quit") {
+            return std::make_unique<Quit>();
+        }
+    }
+    else {
+        throw std::runtime_error("Unknown command.");
+    }
+    return nullptr;
+}
