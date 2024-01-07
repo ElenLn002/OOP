@@ -19,7 +19,5 @@ private:
     std::string command;
     std::unordered_map<int, std::string> attributesMap;
     bool validCommand;
-
-    void parseInput();
 };
 #endif //PARSER_HPP
