@@ -6,5 +6,5 @@ std::shared_ptr<IAction> RemoveSlideFromDoc:: execute()  {
     document->removeSlide(slideNumber);
     std::cout << "Slide with ID " << slideNumber << " removed from document." << std::endl;
 
-    return nullptr;
+    return AddSlideToDoc;
 }
