@@ -4,7 +4,6 @@ void Document::addSlide(const std::shared_ptr<Slide>& slide) {
     slides.push_back(slide);
 }
 
-
 void Document::removeSlide(int slideID) {
     if (slideID > 0 && slideID <= slides.size()) {
         slides.erase(slides.begin() + slideID - 1);
