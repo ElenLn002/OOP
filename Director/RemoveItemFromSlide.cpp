@@ -12,6 +12,6 @@ std::shared_ptr<IAction> RemoveItemFromSlide:: execute(std::shared_ptr<Document>
         std::cout << "Slide " << slideNumber << " does not exist." << std::endl;
     }
 
-    // Return null for now
-    return nullptr; // It should return AddItemToSlide
+   
+    return AddItemToSlide; // It should return AddItemToSlide
 }
