@@ -140,8 +140,8 @@ public:
 };
 
 int main() {
-    size_t physicalMemorySize = 1 << 20; // Example: 1 MB of physical memory
-    size_t pageSize = 1 << 12; // Example: Page size of 4 KB
+    size_t physicalMemorySize = 1 << 20; 
+    size_t pageSize = 1 << 12;
 
     MemoryManager memoryManager(physicalMemorySize, pageSize);
 
